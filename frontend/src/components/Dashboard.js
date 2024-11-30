@@ -2,20 +2,10 @@ import React, { useState } from 'react';
 import { styles } from './styles';
 import DataAnalysis from './DataAnalysis';
 import Prediction from './Prediction';
+import Xai from './Xai';
 
 const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('data-analysis');
-
-  const sensorLocations = [
-    { sensor_id: '773869', latitude: 34.15497, longitude: -118.31829 },
-    { sensor_id: '767541', latitude: 34.11621, longitude: -118.23799 },
-  ];
-
-  const speedTimeSeriesData = Array.from({ length: 24 }, (_, i) => ({
-    hour: i,
-    avgSpeed: Math.random() * 20 + 40,
-    predictedSpeed: Math.random() * 20 + 40
-  }));
 
   return (
     <div style={styles.container}>
@@ -23,7 +13,7 @@ const Dashboard = () => {
         <button
           style={{
             ...styles.tabButton,
-            ...(selectedTab === 'data-analysis' ? styles.activeTab : {})
+            ...(selectedTab === 'data-analysis' ? styles.activeTab : {}),
           }}
           onClick={() => setSelectedTab('data-analysis')}
         >
@@ -32,7 +22,7 @@ const Dashboard = () => {
         <button
           style={{
             ...styles.tabButton,
-            ...(selectedTab === 'prediction' ? styles.activeTab : {})
+            ...(selectedTab === 'prediction' ? styles.activeTab : {}),
           }}
           onClick={() => setSelectedTab('prediction')}
         >
@@ -41,7 +31,7 @@ const Dashboard = () => {
         <button
           style={{
             ...styles.tabButton,
-            ...(selectedTab === 'xai' ? styles.activeTab : {})
+            ...(selectedTab === 'xai' ? styles.activeTab : {}),
           }}
           onClick={() => setSelectedTab('xai')}
         >
@@ -49,17 +39,9 @@ const Dashboard = () => {
         </button>
       </div>
 
-      {selectedTab === 'data-analysis' && (
-        <DataAnalysis
-          sensorLocations={sensorLocations}
-          speedTimeSeriesData={speedTimeSeriesData}
-        />
-      )}
-      {selectedTab === 'prediction' && (
-        <Prediction 
-          speedTimeSeriesData={speedTimeSeriesData} 
-        />
-      )}
+      {selectedTab === 'data-analysis' && <DataAnalysis />}
+      {selectedTab === 'prediction' && <Prediction />}
+      {selectedTab === 'xai' && <Xai />}
     </div>
   );
 };
