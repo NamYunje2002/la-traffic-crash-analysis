@@ -59,7 +59,7 @@ export const styles = {
     height: '100%',
   },
   chartContainer: {
-    height: '320px',
+    height: '500px',
   },
   dateLabel: {
     display: 'flex',
