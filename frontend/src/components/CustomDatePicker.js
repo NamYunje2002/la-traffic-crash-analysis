@@ -20,6 +20,11 @@ const CustomDatePicker = ({ minDate, maxDate, handleSearch }) => {
             maxDateTime={maxDate}
             ampm={false}
             format="yyyy-MM-dd HH:mm"
+            sx={{
+              '& .MuiFormLabel-root': {
+                zIndex: 'auto',
+              },
+            }}
           />
           <span>-</span>
           <DateTimePicker
@@ -30,6 +35,11 @@ const CustomDatePicker = ({ minDate, maxDate, handleSearch }) => {
             maxDateTime={maxDate}
             ampm={false}
             format="yyyy-MM-dd HH:mm"
+            sx={{
+              '& .MuiFormLabel-root': {
+                zIndex: 'auto',
+              },
+            }}
           />
           <button
             style={{

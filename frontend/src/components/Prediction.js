@@ -57,7 +57,7 @@ const Prediction = ({ googleMapsApiKey, laCoordinates }) => {
             collisionLocation={selectedCollisionLocation}
           />
         )}
-        <h2 style={styles.cardTitle}>특정 교통사고 분석</h2>
+        <div style={styles.cardTitle}>특정 교통사고 분석</div>
         <CustomDatePicker
           minDate={minDate}
           maxDate={maxDate}
