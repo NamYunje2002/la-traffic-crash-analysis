@@ -6,36 +6,19 @@ from datetime import datetime, timedelta
 from config import Config
 
 app = Flask(__name__)
+app.config.from_object(Config)
 
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 
-collision_file_path = "./dataset/collision.csv"
-
-app.config.from_object(Config)
-
 @app.route('/api/google-maps-key', methods=['GET'])
 def get_google_maps_key():
-    print(app.config['GOOGLE_MAPS_API_KEY'])
     return jsonify({'apiKey': app.config['GOOGLE_MAPS_API_KEY']})
 
-speed_data = pd.read_csv('./dataset/speed.csv')
-collision_data = pd.read_csv('./dataset/collision.csv')
-sensor_locations = pd.read_csv('./dataset/graph_sensor_locations.csv')
+def get_speed_trends(lat, lon, datetime_str, speed_data):
+    sensor_locations = pd.read_csv(Config.graph_sensor_locations_file_path)
+    
+    speed_data['Date Occurred'] = pd.to_datetime(speed_data['Date Occurred'], errors='coerce')
 
-speed_data['Date Occurred'] = pd.to_datetime(speed_data['Date Occurred'], errors='coerce')
-collision_data['Date Occurred'] = pd.to_datetime(collision_data['Date Occurred'], errors='coerce')
-
-def find_nearby_sensors(latitude, longitude, sensors, radius_km=5):
-    location_point = (latitude, longitude)
-    nearby_sensors = []
-    for _, sensor_row in sensors.iterrows():
-        sensor_point = (sensor_row['latitude'], sensor_row['longitude'])
-        distance = geodesic(location_point, sensor_point).km
-        if distance <= radius_km:
-            nearby_sensors.append(sensor_row['sensor_id'])
-    return nearby_sensors
-
-def get_speed_trends(lat, lon, datetime_str):
     collision_time = datetime.strptime(datetime_str, "%Y-%m-%d %H:%M")
 
     start_time = collision_time - timedelta(minutes=5)
@@ -65,7 +48,6 @@ def get_speed_trends(lat, lon, datetime_str):
     ][relevant_columns]
 
     filtered_speed_data = filtered_speed_data.rename(columns=sensor_mapping)
-
     filtered_speed_data['Date Occurred'] = filtered_speed_data['Date Occurred'].dt.strftime("%Y-%m-%d %H:%M")
 
     return filtered_speed_data.to_dict(orient='records')
@@ -76,11 +58,15 @@ def get_speed_data():
     longitude = float(request.args.get('longitude'))
     datetime_str = request.args.get('datetime')
 
+    real_speed_data = pd.read_csv(Config.real_speed_file_path)
+    predicted_speed_data = pd.read_csv(Config.predicted_speed_file_path)
+
     try:
-        speed_trends = get_speed_trends(latitude, longitude, datetime_str)
-        return jsonify({'success': True, 'speed_trends': speed_trends})
+        real_speed_trends = get_speed_trends(latitude, longitude, datetime_str, real_speed_data)
+        predicted_speed_trends = get_speed_trends(latitude, longitude, datetime_str, predicted_speed_data)
+        return jsonify({'real_speed_trends': real_speed_trends, 'predicted_speed_trends': predicted_speed_trends})
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return jsonify({"error": str(e)}), 500
 
 def convert_month_to_number(month_abbr):
     month_to_number = {
@@ -105,8 +91,8 @@ def get_collisions():
     end_datetime = request.args.get('end_datetime')
     
     try:
-        collision_df = pd.read_csv(collision_file_path)
-        filtered_df = collision_df[['latitude', 'longitude', 'Date Occurred', 'Time Occurred']].copy()
+        collision_data = pd.read_csv(Config.collision_file_path)
+        filtered_df = collision_data[['latitude', 'longitude', 'Date Occurred', 'Time Occurred']].copy()
 
         if (start_datetime and end_datetime):
             filtered_df['Datetime'] = pd.to_datetime(filtered_df['Date Occurred'] + ' ' + filtered_df['Time Occurred'])
@@ -129,38 +115,66 @@ def get_collisions():
     
 @app.route('/api/collision-data', methods=['GET'])
 def get_collision_data():
-    collision_data = pd.read_csv("./dataset/collision_speed_data.csv")
+    collision_real_speed_data = pd.read_csv(Config.collision_real_speed_file_path)
+    collision_predicted_speed_data = pd.read_csv(Config.collision_predicted_speed_file_path)
     
     data_type = request.args.get('type', 'scatter')
 
     if data_type == 'scatter':
-        scatter_data = collision_data[['pre_speed_mean', 'post_speed_mean']].dropna().rename(
+        scatter_real_data = collision_real_speed_data[['pre_speed_mean', 'post_speed_mean']].dropna().round(2).rename(
             columns={
                 'pre_speed_mean': 'preSpeed',
                 'post_speed_mean': 'postSpeed'
             }
         ).to_dict(orient='records')
-        return jsonify(scatter_data)
+
+        scatter_predicted_data = collision_predicted_speed_data[['pre_speed_mean', 'post_speed_mean']].dropna().round(2).rename(
+            columns={
+                'pre_speed_mean': 'preSpeed',
+                'post_speed_mean': 'postSpeed'
+            }
+        ).to_dict(orient='records')
+
+        return jsonify({'scatter_real_data': scatter_real_data, 'scatter_predicted_data': scatter_predicted_data})
 
     elif data_type == 'histogram':
-        if 'speed_change' not in collision_data.columns or collision_data['speed_change'].dropna().empty:
+        if 'speed_change' not in collision_real_speed_data.columns or collision_real_speed_data['speed_change'].dropna().empty:
             return jsonify({"error": "No data for histogram"}), 400
 
-        collision_data['speed_change_bins'] = collision_data['speed_change'].dropna().apply(
+        collision_real_speed_data['speed_change_bins'] = collision_real_speed_data['speed_change'].dropna().apply(
             lambda x: int(x // 10) * 10
         )
-        histogram_data = collision_data['speed_change_bins'].value_counts().reset_index()
 
-        if len(histogram_data.columns) == 2:
-            histogram_data = histogram_data.rename(columns={histogram_data.columns[0]: 'range', histogram_data.columns[1]: 'count'})
+        histogram_real_data = collision_real_speed_data['speed_change_bins'].value_counts().reset_index()
+
+        if len(histogram_real_data.columns) == 2:
+            histogram_real_data = histogram_real_data.rename(columns={histogram_real_data.columns[0]: 'range', histogram_real_data.columns[1]: 'count'})
         else:
-            print("Unexpected histogram structure:", histogram_data.columns)
+            print("Unexpected histogram structure:", histogram_real_data.columns)
             return jsonify({"error": "Unexpected histogram data structure"}), 500
 
-        histogram_data['range'] = pd.to_numeric(histogram_data['range'], errors='coerce')
-        histogram_data = histogram_data.sort_values('range')
+        histogram_real_data['range'] = pd.to_numeric(histogram_real_data['range'], errors='coerce')
+        histogram_real_data = histogram_real_data.sort_values('range')
 
-        return jsonify(histogram_data.to_dict(orient='records'))
+        if 'speed_change' not in collision_predicted_speed_data.columns or collision_predicted_speed_data['speed_change'].dropna().empty:
+            return jsonify({"error": "No data for histogram"}), 400
+
+        collision_predicted_speed_data['speed_change_bins'] = collision_predicted_speed_data['speed_change'].dropna().apply(
+            lambda x: int(x // 10) * 10
+        )
+
+        histogram_predicted_data = collision_predicted_speed_data['speed_change_bins'].value_counts().reset_index()
+
+        if len(histogram_predicted_data.columns) == 2:
+            histogram_predicted_data = histogram_predicted_data.rename(columns={histogram_predicted_data.columns[0]: 'range', histogram_predicted_data.columns[1]: 'count'})
+        else:
+            print("Unexpected histogram structure:", histogram_predicted_data.columns)
+            return jsonify({"error": "Unexpected histogram data structure"}), 500
+
+        histogram_predicted_data['range'] = pd.to_numeric(histogram_predicted_data['range'], errors='coerce')
+        histogram_predicted_data = histogram_predicted_data.sort_values('range')
+
+        return jsonify({'histogram_real_data': histogram_real_data.to_dict(orient='records'), 'histogram_predicted_data': histogram_predicted_data.to_dict(orient='records')})
     
     else:
         return jsonify({"error": "Invalid type parameter"}), 400
