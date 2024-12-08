@@ -44,7 +44,7 @@ const CustomDatePicker = ({ minDate, maxDate, handleSearch }) => {
           <button
             style={{
               padding: '8px 16px',
-              backgroundColor: '#1976d2',
+              backgroundColor: '#007bff',
               color: '#fff',
               border: 'none',
               borderRadius: '4px',

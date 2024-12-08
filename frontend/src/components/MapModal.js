@@ -1,26 +1,40 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Modal from 'react-modal';
+import { Slider } from '@mui/material';
 import { GoogleMap, Marker, Circle } from '@react-google-maps/api';
 import { styles } from './styles';
 
 const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
-  const [loading, setLoading] = useState(true);
-  const [realSpeedData, setRealSpeedData] = useState(null);
-  const [predictedSpeedData, setPredictedSpeedData] = useState(null);
-  const [selectedDatetime, setSelectedDatetime] = useState(null);
   const [mapCenter, setMapCenter] = useState({
     lat: collisionLocation.latitude,
     lng: collisionLocation.longitude,
   });
+
+  const [loading, setLoading] = useState(true);
+
+  const [realSpeedData, setRealSpeedData] = useState(null);
+  const [predictedSpeedData, setPredictedSpeedData] = useState(null);
+
+  const [selectedDatetime, setSelectedDatetime] = useState(null);
+  const [selectedCombinedData, setSelectedCombinedData] = useState(null);
   const [mapZoom, setMapZoom] = useState(13);
+
   const map1Ref = useRef(null);
   const map2Ref = useRef(null);
   const isSyncingRef = useRef(false);
+  const [radius, setRadius] = useState(200);
 
   const [combinedData, setCombinedData] = useState(null);
 
+  const handleSliderChange = (event, value) => {
+    setRadius(value); // Update radius state when slider changes
+    console.log(radius);
+  };
+
   const handleMapChange = (sourceMapRef, targetMapRef, updateCenter = true, updateZoom = true) => {
-    if (isSyncingRef.current || !sourceMapRef.current || !targetMapRef.current) return;
+    if (isSyncingRef.current || !sourceMapRef.current || !targetMapRef.current) {
+      return;
+    }
     isSyncingRef.current = true;
 
     const sourceMap = sourceMapRef.current;
@@ -28,7 +42,9 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
 
     if (updateCenter) {
       const center = sourceMap.getCenter();
-      targetMap.setCenter({ lat: center.lat(), lng: center.lng() });
+      if (center !== null) {
+        targetMap.setCenter({ lat: center.lat(), lng: center.lng() });
+      }
     }
 
     if (updateZoom) {
@@ -48,14 +64,48 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
   };
 
   const getCircleColor = (speed) => {
-    if (speed > 90) return '#0000FF';
-    if (speed > 80) return '#00BFFF';
-    if (speed > 70) return '#00FF00';
-    if (speed > 60) return '#ADFF2F';
-    if (speed > 50) return '#FFFF00';
-    if (speed > 40) return '#FFA500';
-    if (speed > 30) return '#FF4500';
+    if (speed > 60) return '#00FF00';
+    if (speed > 50) return '#ADFF2F';
+    if (speed > 40) return '#FFFF00';
+    if (speed > 30) return '#FFA500';
+    if (speed > 20) return '#FF4500';
     return '#FF0000';
+  };
+
+  const renderSpeedCircles = (speeds) => {
+    const getSpeedRange = (speed) => {
+      if (speed > 60) return '60+';
+      if (speed > 50) return '51-60';
+      if (speed > 40) return '41-50';
+      if (speed > 30) return '31-40';
+      if (speed > 20) return '21-30';
+      return '0-20';
+    };
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '2rem' }}>
+        {speeds.map((speed, index) => (
+          <div
+            key={index}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+            }}
+          >
+            <div
+              style={{
+                width: '30px',
+                height: '30px',
+                borderRadius: '50%',
+                backgroundColor: getCircleColor(speed),
+              }}
+            ></div>
+            <span>{`${getSpeedRange(speed)}`}</span>
+          </div>
+        ))}
+      </div>
+    );
   };
 
   const parseCoordinates = (key) => {
@@ -64,24 +114,25 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
   };
 
   const renderCircles = (data, getCircleColor) => {
-    return Object.entries(data).map(([key, speed], index) => {
-      const { lat, lng } = parseCoordinates(key);
-
-      return (
-        <Circle
-          key={`${index}-${lat}-${lng}`}
-          center={{ lat, lng }}
-          radius={200}
-          options={{
-            fillColor: getCircleColor(speed),
-            fillOpacity: 0.5,
-            strokeColor: getCircleColor(speed),
-            strokeOpacity: 0.8,
-            strokeWeight: 1,
-          }}
-        />
-      );
-    });
+    return Object.entries(data)
+      .filter(([key]) => !isNaN(parseCoordinates(key).lat))
+      .map(([key, speed], index) => {
+        const { lat, lng } = parseCoordinates(key);
+        return (
+          <Circle
+            key={`${index}-${lat}-${lng}`}
+            center={{ lat, lng }}
+            radius={200}
+            options={{
+              fillColor: getCircleColor(speed),
+              fillOpacity: 0.5,
+              strokeColor: getCircleColor(speed),
+              strokeOpacity: 0.8,
+              strokeWeight: 1,
+            }}
+          />
+        );
+      });
   };
 
   useEffect(() => {
@@ -126,18 +177,7 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      style={{
-        content: {
-          top: '50%',
-          left: '50%',
-          right: 'auto',
-          bottom: 'auto',
-          marginRight: '-50%',
-          transform: 'translate(-50%, -50%)',
-          width: '90%',
-          height: '90%',
-        },
-      }}
+      styles={styles.modalContent}
       contentLabel="Traffic Analysis Modal"
     >
       <div style={styles.grid}>
@@ -145,6 +185,9 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
           <div style={styles.cardTitle}>
             교통사고 발생 날짜: {collisionLocation['Date Occurred']}{' '}
             {collisionLocation['Time Occurred']}
+            <button onClick={onClose} style={styles.modalCloseButton}>
+              &times;
+            </button>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             {realSpeedData && (
@@ -152,13 +195,22 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
                 {combinedData.map((row, index) => {
                   const realDate = row.realRow['Date Occurred'];
                   const predictedDate = row.predictedRow['Date Occurred'];
-
                   return (
                     <button
-                      key={index}
-                      style={{ margin: '5px' }}
+                      key={realDate}
+                      style={{
+                        padding: '10px 20px',
+                        margin: '5px',
+                        border: '1px solid #ccc',
+                        borderRadius: '5px',
+                        cursor: 'pointer',
+                        backgroundColor: selectedDatetime === realDate ? '#007bff' : '#f1f1f1',
+                        color: selectedDatetime === realDate ? '#fff' : '#000',
+                        transition: 'background-color 0.3s',
+                      }}
                       onClick={() => {
-                        setSelectedDatetime({ real: row.realRow, predicted: row.predictedRow });
+                        setSelectedDatetime(realDate);
+                        setSelectedCombinedData({ real: row.realRow, predicted: row.predictedRow });
                       }}
                     >
                       {realDate}
@@ -167,20 +219,6 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
                 })}
               </div>
             )}
-            <button
-              onClick={onClose}
-              style={{
-                backgroundColor: '#f44336',
-                color: '#fff',
-                border: 'none',
-                padding: '8px 12px',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                fontSize: '14px',
-              }}
-            >
-              닫기
-            </button>
           </div>
         </div>
 
@@ -188,6 +226,7 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
           '로딩 중..'
         ) : (
           <>
+            <div style={styles.fullWidth}>{renderSpeedCircles([10, 25, 35, 45, 55, 65])}</div>
             <div style={styles.card}>
               <div style={styles.cardTitle}>실제 데이터</div>
               <div style={{ ...styles.mapContainer }}>
@@ -200,7 +239,16 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
                   onLoad={onLoadMap1}
                 >
                   <Marker position={mapCenter} />
-                  {selectedDatetime && renderCircles(selectedDatetime.real, getCircleColor)}
+                  <Circle
+                    center={mapCenter}
+                    radius={radius}
+                    options={{
+                      fillOpacity: 0,
+                      strokeColor: '#000000',
+                      strokeWeight: 3,
+                    }}
+                  />
+                  {selectedCombinedData && renderCircles(selectedCombinedData.real, getCircleColor)}
                 </GoogleMap>
               </div>
             </div>
@@ -217,12 +265,46 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
                   onLoad={onLoadMap2}
                 >
                   <Marker position={mapCenter} />
-                  {selectedDatetime && renderCircles(selectedDatetime.predicted, getCircleColor)}
+                  <Circle
+                    center={mapCenter}
+                    radius={radius}
+                    options={{
+                      fillOpacity: 0,
+                      strokeColor: '#000000',
+                      strokeWeight: 3,
+                    }}
+                  />
+                  {selectedCombinedData &&
+                    renderCircles(selectedCombinedData.predicted, getCircleColor)}
                 </GoogleMap>
               </div>
             </div>
+            <div
+              style={{
+                ...styles.fullWidth,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <span>사고 반경 조절</span>
+              <Slider
+                defaultValue={radius}
+                value={radius}
+                onChange={handleSliderChange}
+                min={0}
+                max={400}
+                step={1}
+                sx={{ width: 300 }}
+              />
+            </div>
           </>
         )}
+
+        <div style={{ ...styles.card, ...styles.fullWidth }}>
+          <div style={styles.cardTitle}>예측 데이터</div>
+        </div>
       </div>
     </Modal>
   );
