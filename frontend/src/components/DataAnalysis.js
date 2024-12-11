@@ -58,8 +58,6 @@ const DataAnalysis = ({ googleMapsApiKey, laCoordinates }) => {
     fetch('http://localhost:5000/api/collision-data?type=histogram')
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-
         const realData = data['histogram_real_data'].map((item) => ({
           range: `${item.range} to ${item.range + 10}`,
           count: item.count,
@@ -72,13 +70,36 @@ const DataAnalysis = ({ googleMapsApiKey, laCoordinates }) => {
 
         const mergedData = mergeHistogramData(realData, predictedData);
         setCombinedHistogramData(mergedData);
-
-        console.log('Real Data:', realData);
-        console.log('Predicted Data:', predictedData);
-        console.log('Merged Data:', mergedData);
       })
       .catch((error) => console.error('Error fetching histogram data:', error));
   }, []);
+
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const dataSource = payload[0].payload.source;
+      const preSpeed = payload[0].payload.preSpeed;
+      const postSpeed = payload[0].payload.postSpeed;
+
+      const color = dataSource === '실제 데이터' ? '#8884d8' : '#82ca9d';
+
+      return (
+        <div
+          style={{
+            backgroundColor: '#fff',
+            border: '1px solid #ccc',
+            padding: '10px',
+            borderRadius: '5px',
+          }}
+        >
+          <p style={{ color: color, fontWeight: 'bold' }}>{dataSource}</p>
+          <p>{`이전 속도: ${preSpeed} km/h`}</p>
+          <p>{`이후 속도: ${postSpeed} km/h`}</p>
+        </div>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <div style={styles.grid}>
@@ -102,7 +123,7 @@ const DataAnalysis = ({ googleMapsApiKey, laCoordinates }) => {
                 unit="km/h"
                 domain={[0, 80]}
               />
-              <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+              <Tooltip content={<CustomTooltip />} cursor={{ strokeDasharray: '3 3' }} />
               <Legend />
               <Scatter name="실제 데이터" data={realScatterData} fill="#8884d8" />
               <Scatter name="예측 데이터" data={predictedScatterData} fill="#82ca9d" />

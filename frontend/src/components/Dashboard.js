@@ -44,7 +44,7 @@ const Dashboard = () => {
           }}
           onClick={() => setSelectedTab('prediction')}
         >
-          예측 모델
+          교통사고 분석
         </button>
       </div>
 

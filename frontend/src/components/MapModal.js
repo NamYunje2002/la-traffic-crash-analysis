@@ -22,7 +22,7 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
   const map1Ref = useRef(null);
   const map2Ref = useRef(null);
   const isSyncingRef = useRef(false);
-  const [radius, setRadius] = useState(200);
+  const [radius, setRadius] = useState(100);
 
   const [combinedData, setCombinedData] = useState(null);
 
@@ -101,7 +101,7 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
                 backgroundColor: getCircleColor(speed),
               }}
             ></div>
-            <span>{`${getSpeedRange(speed)}`}</span>
+            <span>{`${getSpeedRange(speed)} km/h`}</span>
           </div>
         ))}
       </div>
@@ -122,7 +122,7 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
           <Circle
             key={`${index}-${lat}-${lng}`}
             center={{ lat, lng }}
-            radius={200}
+            radius={180}
             options={{
               fillColor: getCircleColor(speed),
               fillOpacity: 0.5,
@@ -288,13 +288,13 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
                 alignItems: 'center',
               }}
             >
-              <span>사고 반경 조절</span>
+              <span>사고 반경 조절 ({radius}m)</span>
               <Slider
                 defaultValue={radius}
                 value={radius}
                 onChange={handleSliderChange}
                 min={0}
-                max={400}
+                max={500}
                 step={1}
                 sx={{ width: 300 }}
               />

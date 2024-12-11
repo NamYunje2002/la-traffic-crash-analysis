@@ -117,6 +117,16 @@ def get_collisions():
 def get_collision_data():
     collision_real_speed_data = pd.read_csv(Config.collision_real_speed_file_path)
     collision_predicted_speed_data = pd.read_csv(Config.collision_predicted_speed_file_path)
+
+    collision_real_speed_data = collision_real_speed_data[
+        (collision_real_speed_data['pre_speed_mean'] > 0) & 
+        (collision_real_speed_data['post_speed_mean'] > 0)
+    ]
+
+    collision_predicted_speed_data = collision_predicted_speed_data[
+        (collision_predicted_speed_data['pre_speed_mean'] >= 0) & 
+        (collision_predicted_speed_data['post_speed_mean'] >= 0)
+    ]
     
     data_type = request.args.get('type', 'scatter')
 
@@ -126,16 +136,17 @@ def get_collision_data():
                 'pre_speed_mean': 'preSpeed',
                 'post_speed_mean': 'postSpeed'
             }
-        ).to_dict(orient='records')
+        ).assign(source="실제 데이터").to_dict(orient='records')
 
         scatter_predicted_data = collision_predicted_speed_data[['pre_speed_mean', 'post_speed_mean']].dropna().round(2).rename(
             columns={
                 'pre_speed_mean': 'preSpeed',
                 'post_speed_mean': 'postSpeed'
             }
-        ).to_dict(orient='records')
+        ).assign(source="예측 데이터").to_dict(orient='records')
 
         return jsonify({'scatter_real_data': scatter_real_data, 'scatter_predicted_data': scatter_predicted_data})
+
 
     elif data_type == 'histogram':
         if 'speed_change' not in collision_real_speed_data.columns or collision_real_speed_data['speed_change'].dropna().empty:
