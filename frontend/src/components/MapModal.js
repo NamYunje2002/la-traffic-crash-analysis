@@ -3,12 +3,15 @@ import Modal from 'react-modal';
 import { Slider } from '@mui/material';
 import { GoogleMap, Marker, Circle } from '@react-google-maps/api';
 import { styles } from './styles';
+import AverageSpeedChart from './AverageSpeedChart';
 
 const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
   const [mapCenter, setMapCenter] = useState({
     lat: collisionLocation.latitude,
     lng: collisionLocation.longitude,
   });
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedCircle, setSelectedCircle] = useState(null);
 
   const [loading, setLoading] = useState(true);
 
@@ -27,8 +30,7 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
   const [combinedData, setCombinedData] = useState(null);
 
   const handleSliderChange = (event, value) => {
-    setRadius(value); // Update radius state when slider changes
-    console.log(radius);
+    setRadius(value);
   };
 
   const handleMapChange = (sourceMapRef, targetMapRef, updateCenter = true, updateZoom = true) => {
@@ -113,11 +115,63 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
     return { lat, lng };
   };
 
+  const filterDataByLocation = (speedData, location) => {
+    if (!location || !speedData) return [];
+    const rsl = [];
+    console.log(location);
+    speedData.forEach((speedDataByTime) => {
+      const time = new Date(speedDataByTime['Date Occurred']).toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23',
+      });
+      Object.entries(speedDataByTime).forEach(([key, value]) => {
+        const currentCoordinate = parseCoordinates(key);
+        if (currentCoordinate.lat === location.lat && currentCoordinate.lng === location.lng) {
+          rsl.push({ time: time, speed: value });
+        }
+      });
+      console.log(rsl);
+    });
+    return rsl;
+  };
+
+  const processData = (data) => {
+    const groupedData = {};
+
+    data.forEach((entry) => {
+      const { 'Date Occurred': dateOccurred, ...speeds } = entry;
+
+      const time = new Date(dateOccurred).toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23',
+      });
+
+      const speedValues = Object.values(speeds).filter((value) => typeof value === 'number');
+      const averageSpeed = speedValues.reduce((sum, speed) => sum + speed, 0) / speedValues.length;
+
+      if (!groupedData[time]) {
+        groupedData[time] = [];
+      }
+      groupedData[time].push(averageSpeed);
+    });
+
+    const processedData = Object.entries(groupedData).map(([time, speeds]) => ({
+      time,
+      speed: speeds.reduce((sum, speed) => sum + speed, 0) / speeds.length,
+    }));
+
+    return processedData;
+  };
+
   const renderCircles = (data, getCircleColor) => {
     return Object.entries(data)
       .filter(([key]) => !isNaN(parseCoordinates(key).lat))
       .map(([key, speed], index) => {
         const { lat, lng } = parseCoordinates(key);
+        const isSelected = selectedCircle?.lat === lat && selectedCircle?.lng === lng;
+
         return (
           <Circle
             key={`${index}-${lat}-${lng}`}
@@ -126,9 +180,18 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
             options={{
               fillColor: getCircleColor(speed),
               fillOpacity: 0.5,
-              strokeColor: getCircleColor(speed),
-              strokeOpacity: 0.8,
-              strokeWeight: 1,
+              strokeColor: isSelected ? '#000000' : getCircleColor(speed),
+              strokeOpacity: isSelected ? 1 : 0.8,
+              strokeWeight: isSelected ? 3 : 1,
+            }}
+            onClick={() => {
+              if (isSelected) {
+                setSelectedCircle(null);
+                setSelectedLocation(null);
+              } else {
+                setSelectedCircle({ lat, lng });
+                setSelectedLocation({ lat, lng });
+              }
             }}
           />
         );
@@ -299,12 +362,26 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
                 sx={{ width: 300 }}
               />
             </div>
+            <div style={{ ...styles.card, ...styles.fullWidth }}>
+              <div style={styles.cardTitle}>시간대별 평균 속도 변화</div>
+              <AverageSpeedChart
+                realSpeedData={processData(realSpeedData)}
+                predictedSpeedData={processData(predictedSpeedData)}
+              />
+            </div>
+            <div style={{ ...styles.card, ...styles.fullWidth }}>
+              <div style={styles.cardTitle}>선택된 위치의 속도 변화</div>
+              {selectedLocation ? (
+                <AverageSpeedChart
+                  realSpeedData={filterDataByLocation(realSpeedData, selectedLocation)}
+                  predictedSpeedData={filterDataByLocation(predictedSpeedData, selectedLocation)}
+                />
+              ) : (
+                <p>위치를 선택하여 데이터를 확인하세요.</p>
+              )}
+            </div>
           </>
         )}
-
-        <div style={{ ...styles.card, ...styles.fullWidth }}>
-          <div style={styles.cardTitle}>예측 데이터</div>
-        </div>
       </div>
     </Modal>
   );

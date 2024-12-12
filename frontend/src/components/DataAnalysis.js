@@ -104,7 +104,7 @@ const DataAnalysis = ({ googleMapsApiKey, laCoordinates }) => {
   return (
     <div style={styles.grid}>
       <div style={{ ...styles.card, ...styles.fullWidth }}>
-        <div style={styles.cardTitle}>사고 전후 평균 속도 비교</div>
+        <div style={styles.cardTitle}>사고 전후 속도 비교</div>
         <div style={styles.chartContainer}>
           <ResponsiveContainer>
             <ScatterChart>
