@@ -1,17 +1,17 @@
 export const styles = {
   container: {
-    maxWidth: '1200px',
+    maxWidth: '90%',
     margin: '0 auto',
-    padding: '16px',
+    padding: '1rem',
   },
   tabContainer: {
     display: 'flex',
-    gap: '16px',
+    gap: '1rem',
     borderBottom: '1px solid #e5e7eb',
-    marginBottom: '16px',
+    marginBottom: '1rem',
   },
   tabButton: {
-    padding: '8px 16px',
+    padding: '0.5rem 1rem',
     border: 'none',
     background: 'none',
     cursor: 'pointer',
@@ -23,12 +23,12 @@ export const styles = {
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: '16px',
+    gap: '1rem',
   },
   card: {
     border: '1px solid #e5e7eb',
-    borderRadius: '8px',
-    padding: '16px',
+    borderRadius: '0.5rem',
+    padding: '1rem',
   },
   fullWidth: {
     gridColumn: '1 / -1',
@@ -46,8 +46,8 @@ export const styles = {
   },
   mapContainer: {
     width: '100%',
-    height: '600px',
-    borderRadius: '8px',
+    height: '40rem',
+    borderRadius: '0.5rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -69,11 +69,11 @@ export const styles = {
     display: 'flex',
     flexDirection: 'column',
     fontSize: '1rem',
-    marginBottom: '8px',
+    marginBottom: '0.5rem',
   },
   dateInput: {
-    marginTop: '8px',
-    padding: '8px',
+    marginTop: '0.5rem',
+    padding: '0.5rem',
     border: '1px solid #e5e7eb',
     borderRadius: '4px',
     fontSize: '1rem',
@@ -84,7 +84,7 @@ export const styles = {
   },
   analyzeButton: {
     marginTop: '10px',
-    padding: '8px 12px',
+    padding: '0.5rem 12px',
     backgroundColor: '#007bff',
     color: 'white',
     border: 'none',
@@ -103,8 +103,8 @@ export const styles = {
   },
   modalCloseButton: {
     position: 'absolute',
-    top: '10px',
-    right: '10px',
+    top: '0.6rem',
+    right: '0.6rem',
     backgroundColor: 'transparent',
     color: '#000',
     border: 'none',

@@ -45,7 +45,7 @@ const DataAnalysis = ({ googleMapsApiKey, laCoordinates }) => {
   };
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/collision-data?type=scatter')
+    fetch('http://localhost:5000/api/collisions/visualization?type=scatter')
       .then((response) => response.json())
       .then((data) => {
         setRealScatterData(data.scatter_real_data);
@@ -55,7 +55,7 @@ const DataAnalysis = ({ googleMapsApiKey, laCoordinates }) => {
   }, []);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/collision-data?type=histogram')
+    fetch('http://localhost:5000/api/collisions/visualization?type=histogram')
       .then((response) => response.json())
       .then((data) => {
         const realData = data['histogram_real_data'].map((item) => ({

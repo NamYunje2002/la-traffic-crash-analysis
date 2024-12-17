@@ -72,6 +72,7 @@ const AverageSpeedChart = ({ realSpeedData, predictedSpeedData }) => {
             dataKey="realAverageSpeed"
             name="실제 데이터"
             stroke="#8884d8"
+            strokeWidth={4}
             activeDot={{ r: 8 }}
           />
           <Line
@@ -79,6 +80,7 @@ const AverageSpeedChart = ({ realSpeedData, predictedSpeedData }) => {
             dataKey="predictedAverageSpeed"
             name="예측 데이터"
             stroke="#82ca9d"
+            strokeWidth={4}
             activeDot={{ r: 8 }}
           />
         </LineChart>

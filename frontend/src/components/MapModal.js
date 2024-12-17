@@ -118,7 +118,6 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
   const filterDataByLocation = (speedData, location) => {
     if (!location || !speedData) return [];
     const rsl = [];
-    console.log(location);
     speedData.forEach((speedDataByTime) => {
       const time = new Date(speedDataByTime['Date Occurred']).toLocaleTimeString('en-US', {
         hour: '2-digit',
@@ -131,7 +130,6 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
           rsl.push({ time: time, speed: value });
         }
       });
-      console.log(rsl);
     });
     return rsl;
   };
@@ -203,7 +201,7 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
       try {
         setLoading(true);
 
-        const apiUrl = `/api/get_speed_data?latitude=${collisionLocation.latitude}
+        const apiUrl = `/api/traffic-speeds?latitude=${collisionLocation.latitude}
         &longitude=${collisionLocation.longitude}
         &datetime=${collisionLocation['Date Occurred']} ${collisionLocation['Time Occurred']}`;
 
