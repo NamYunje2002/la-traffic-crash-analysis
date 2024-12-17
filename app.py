@@ -15,7 +15,7 @@ def get_google_maps_key():
     return jsonify({'apiKey': app.config['GOOGLE_MAPS_API_KEY']})
 
 def get_speed_trends(lat, lon, datetime_str, speed_data):
-    sensor_locations = pd.read_csv(Config.graph_sensor_locations_file_path)
+    sensor_locations = pd.read_csv(Config.GRAPH_SENSOR_LOCATIONS_FILE_PATH)
     
     speed_data['Date Occurred'] = pd.to_datetime(speed_data['Date Occurred'], errors='coerce')
 
@@ -52,14 +52,14 @@ def get_speed_trends(lat, lon, datetime_str, speed_data):
 
     return filtered_speed_data.to_dict(orient='records')
 
-@app.route('/api/get_speed_data', methods=['GET'])
-def get_speed_data():
+@app.route('/api/traffic-speeds', methods=['GET'])
+def traffic_speeds():
     latitude = float(request.args.get('latitude'))
     longitude = float(request.args.get('longitude'))
     datetime_str = request.args.get('datetime')
 
-    real_speed_data = pd.read_csv(Config.real_speed_file_path)
-    predicted_speed_data = pd.read_csv(Config.predicted_speed_file_path)
+    real_speed_data = pd.read_csv(Config.REAL_SPEED_FILE_PATH)
+    predicted_speed_data = pd.read_csv(Config.PREDICTED_SPEED_FILE_PATH)
 
     try:
         real_speed_trends = get_speed_trends(latitude, longitude, datetime_str, real_speed_data)
@@ -91,7 +91,7 @@ def get_collisions():
     end_datetime = request.args.get('end_datetime')
     
     try:
-        collision_data = pd.read_csv(Config.collision_file_path)
+        collision_data = pd.read_csv(Config.COLLISION_FILE_PATH)
         filtered_df = collision_data[['latitude', 'longitude', 'Date Occurred', 'Time Occurred']].copy()
 
         if (start_datetime and end_datetime):
@@ -113,10 +113,10 @@ def get_collisions():
         print(e)
         return jsonify({"error": str(e)}), 500
     
-@app.route('/api/collision-data', methods=['GET'])
+@app.route('/api/collisions/visualization', methods=['GET'])
 def get_collision_data():
-    collision_real_speed_data = pd.read_csv(Config.collision_real_speed_file_path)
-    collision_predicted_speed_data = pd.read_csv(Config.collision_predicted_speed_file_path)
+    collision_real_speed_data = pd.read_csv(Config.COLLISION_REAL_SPEED_FILE_PATH)
+    collision_predicted_speed_data = pd.read_csv(Config.COLLISION_PREDICTED_SPEED_FILE_PATH)
 
     collision_real_speed_data = collision_real_speed_data[
         (collision_real_speed_data['pre_speed_mean'] > 0) & 
