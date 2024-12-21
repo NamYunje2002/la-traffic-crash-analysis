@@ -75,7 +75,7 @@ flask --debug run
 .\venv\scripts\activate
 cd frontend
 ```
-(3) 필요한 모듈을 설치하고 버전 호환성을 문제를 해결합니다.
+(3) 필요한 모듈을 설치하고 버전 호환성 문제를 해결합니다.
 ```
 npm uninstall date-fns
 npm install date-fns@^2.30.0
