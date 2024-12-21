@@ -63,7 +63,7 @@ export const styles = {
     height: '100%',
   },
   chartContainer: {
-    height: '500px',
+    height: '30rem',
   },
   dateLabel: {
     display: 'flex',
@@ -83,8 +83,8 @@ export const styles = {
     color: '#6b7280',
   },
   analyzeButton: {
-    marginTop: '10px',
-    padding: '0.5rem 12px',
+    marginTop: '0.6rem',
+    padding: '0.5rem 0.8rem',
     backgroundColor: '#007bff',
     color: 'white',
     border: 'none',
@@ -111,7 +111,7 @@ export const styles = {
     fontSize: '2rem',
     cursor: 'pointer',
     fontWeight: 'bold',
-    padding: '5px',
+    padding: '0.3rem',
     transition: 'color 0.2s ease',
   },
 };

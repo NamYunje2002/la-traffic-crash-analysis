@@ -17,30 +17,30 @@ const CustomLegend = () => {
         justifyContent: 'center',
         alignItems: 'center',
         gap: '2rem',
-        marginTop: '10px',
+        marginTop: '0.6rem',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
         <div
           style={{
-            width: '10px',
-            height: '10px',
+            width: '0.6rem',
+            height: '0.6rem',
             borderRadius: '50%',
             backgroundColor: '#8884d8',
           }}
         ></div>
-        <span style={{ fontSize: '14px', color: '#8884d8' }}>실제 데이터</span>
+        <span style={{ fontSize: '1rem', color: '#8884d8' }}>실제 데이터</span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
         <div
           style={{
-            width: '10px',
-            height: '10px',
+            width: '0.6rem',
+            height: '0.6rem',
             borderRadius: '50%',
             backgroundColor: '#82ca9d',
           }}
         ></div>
-        <span style={{ fontSize: '14px', color: '#82ca9d' }}>예측 데이터</span>
+        <span style={{ fontSize: '1rem', color: '#82ca9d' }}>예측 데이터</span>
       </div>
     </div>
   );

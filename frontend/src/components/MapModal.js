@@ -92,13 +92,13 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '10px',
+              gap: '0.6rem',
             }}
           >
             <div
               style={{
-                width: '30px',
-                height: '30px',
+                width: '2rem',
+                height: '2rem',
                 borderRadius: '50%',
                 backgroundColor: getCircleColor(speed),
               }}
@@ -250,7 +250,7 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
               &times;
             </button>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
             {realSpeedData && (
               <div>
                 {combinedData.map((row, index) => {
@@ -260,8 +260,8 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
                     <button
                       key={realDate}
                       style={{
-                        padding: '10px 20px',
-                        margin: '5px',
+                        padding: '0.6rem 1.3rem',
+                        margin: '0.3rem',
                         border: '1px solid #ccc',
                         borderRadius: '5px',
                         cursor: 'pointer',
@@ -361,13 +361,6 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
               />
             </div>
             <div style={{ ...styles.card, ...styles.fullWidth }}>
-              <div style={styles.cardTitle}>시간대별 평균 속도 변화</div>
-              <AverageSpeedChart
-                realSpeedData={processData(realSpeedData)}
-                predictedSpeedData={processData(predictedSpeedData)}
-              />
-            </div>
-            <div style={{ ...styles.card, ...styles.fullWidth }}>
               <div style={styles.cardTitle}>선택된 위치의 속도 변화</div>
               {selectedLocation ? (
                 <AverageSpeedChart
@@ -377,6 +370,13 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
               ) : (
                 <p>위치를 선택하여 데이터를 확인하세요.</p>
               )}
+            </div>
+            <div style={{ ...styles.card, ...styles.fullWidth }}>
+              <div style={styles.cardTitle}>시간대별 평균 속도 변화</div>
+              <AverageSpeedChart
+                realSpeedData={processData(realSpeedData)}
+                predictedSpeedData={processData(predictedSpeedData)}
+              />
             </div>
           </>
         )}

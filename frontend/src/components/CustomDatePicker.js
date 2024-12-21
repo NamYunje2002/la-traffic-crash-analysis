@@ -9,9 +9,9 @@ const CustomDatePicker = ({ minDate, maxDate, handleSearch }) => {
   const [endDateTime, setEndDateTime] = useState(maxDate);
 
   return (
-    <div style={{ margin: '32px 0px' }}>
+    <div style={{ margin: '2rem 0px' }}>
       <LocalizationProvider dateAdapter={AdapterDateFns} locale={ko}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
           <DateTimePicker
             label="시작 날짜"
             value={startDateTime}
@@ -43,7 +43,7 @@ const CustomDatePicker = ({ minDate, maxDate, handleSearch }) => {
           />
           <button
             style={{
-              padding: '8px 16px',
+              padding: '0.5rem 1rem',
               backgroundColor: '#007bff',
               color: '#fff',
               border: 'none',

@@ -87,7 +87,7 @@ const DataAnalysis = ({ googleMapsApiKey, laCoordinates }) => {
           style={{
             backgroundColor: '#fff',
             border: '1px solid #ccc',
-            padding: '10px',
+            padding: '0.6rem',
             borderRadius: '5px',
           }}
         >
