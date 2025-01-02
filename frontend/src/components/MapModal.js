@@ -244,7 +244,7 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
       <div style={styles.grid}>
         <div style={(styles.card, styles.fullWidth)}>
           <div style={styles.cardTitle}>
-            교통사고 발생 날짜: {collisionLocation['Date Occurred']}{' '}
+            Date of Accident: {collisionLocation['Date Occurred']}{' '}
             {collisionLocation['Time Occurred']}
             <button onClick={onClose} style={styles.modalCloseButton}>
               &times;
@@ -284,12 +284,12 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
         </div>
 
         {loading ? (
-          '로딩 중..'
+          'Loading...'
         ) : (
           <>
             <div style={styles.fullWidth}>{renderSpeedCircles([10, 25, 35, 45, 55, 65])}</div>
             <div style={styles.card}>
-              <div style={styles.cardTitle}>실제 데이터</div>
+              <div style={styles.cardTitle}>Real Data</div>
               <div style={{ ...styles.mapContainer }}>
                 <GoogleMap
                   mapContainerStyle={styles.mapContainerStyle}
@@ -315,7 +315,7 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
             </div>
 
             <div style={styles.card}>
-              <div style={styles.cardTitle}>예측 데이터</div>
+              <div style={styles.cardTitle}>Predicted Data</div>
               <div style={{ ...styles.mapContainer }}>
                 <GoogleMap
                   mapContainerStyle={styles.mapContainerStyle}
@@ -349,7 +349,7 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
                 alignItems: 'center',
               }}
             >
-              <span>사고 반경 조절 ({radius}m)</span>
+              <span>Adjust Accident Radius ({radius}m)</span>
               <Slider
                 defaultValue={radius}
                 value={radius}
@@ -361,18 +361,18 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
               />
             </div>
             <div style={{ ...styles.card, ...styles.fullWidth }}>
-              <div style={styles.cardTitle}>선택된 위치의 속도 변화</div>
+              <div style={styles.cardTitle}>Speed Change at Selected Location</div>
               {selectedLocation ? (
                 <AverageSpeedChart
                   realSpeedData={filterDataByLocation(realSpeedData, selectedLocation)}
                   predictedSpeedData={filterDataByLocation(predictedSpeedData, selectedLocation)}
                 />
               ) : (
-                <p>위치를 선택하여 데이터를 확인하세요.</p>
+                <p>Select a location to view data.</p>
               )}
             </div>
             <div style={{ ...styles.card, ...styles.fullWidth }}>
-              <div style={styles.cardTitle}>시간대별 평균 속도 변화</div>
+              <div style={styles.cardTitle}>Average Speed Change by Time</div>
               <AverageSpeedChart
                 realSpeedData={processData(realSpeedData)}
                 predictedSpeedData={processData(predictedSpeedData)}

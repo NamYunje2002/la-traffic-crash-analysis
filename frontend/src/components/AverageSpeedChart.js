@@ -29,7 +29,7 @@ const CustomLegend = () => {
             backgroundColor: '#8884d8',
           }}
         ></div>
-        <span style={{ fontSize: '1rem', color: '#8884d8' }}>실제 데이터</span>
+        <span style={{ fontSize: '1rem', color: '#8884d8' }}>Real Data</span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
         <div
@@ -40,7 +40,7 @@ const CustomLegend = () => {
             backgroundColor: '#82ca9d',
           }}
         ></div>
-        <span style={{ fontSize: '1rem', color: '#82ca9d' }}>예측 데이터</span>
+        <span style={{ fontSize: '1rem', color: '#82ca9d' }}>Predicted Data</span>
       </div>
     </div>
   );
@@ -64,13 +64,13 @@ const AverageSpeedChart = ({ realSpeedData, predictedSpeedData }) => {
       <ResponsiveContainer width="100%" height={400}>
         <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="time" label={{ value: '시간', position: 'insideBottom', offset: -5 }} />
-          <YAxis label={{ value: '평균 속도 (km/h)', angle: -90, position: 'insideLeft' }} />
+          <XAxis dataKey="time" label={{ value: 'Time', position: 'insideBottom', offset: -5 }} />
+          <YAxis label={{ value: 'Average Speed (km/h)', angle: -90, position: 'insideLeft' }} />
           <Tooltip formatter={(value) => `${value.toFixed(2)} km/h`} />
           <Line
             type="monotone"
             dataKey="realAverageSpeed"
-            name="실제 데이터"
+            name="Real Data"
             stroke="#8884d8"
             strokeWidth={4}
             activeDot={{ r: 8 }}
@@ -78,7 +78,7 @@ const AverageSpeedChart = ({ realSpeedData, predictedSpeedData }) => {
           <Line
             type="monotone"
             dataKey="predictedAverageSpeed"
-            name="예측 데이터"
+            name="Predicted Data"
             stroke="#82ca9d"
             strokeWidth={4}
             activeDot={{ r: 8 }}

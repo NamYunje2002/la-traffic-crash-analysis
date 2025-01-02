@@ -11,12 +11,10 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { styles } from './styles';
 
 const DataAnalysis = ({ googleMapsApiKey, laCoordinates }) => {
   const [realScatterData, setRealScatterData] = useState([]);
   const [predictedScatterData, setPredictedScatterData] = useState([]);
-
   const [combinedHistogramData, setCombinedHistogramData] = useState(null);
 
   const mergeHistogramData = (realData, predictedData) => {
@@ -80,20 +78,15 @@ const DataAnalysis = ({ googleMapsApiKey, laCoordinates }) => {
       const preSpeed = payload[0].payload.preSpeed;
       const postSpeed = payload[0].payload.postSpeed;
 
-      const color = dataSource === '실제 데이터' ? '#8884d8' : '#82ca9d';
+      const color = dataSource === 'Real Data' ? '#8884d8' : '#82ca9d';
 
       return (
-        <div
-          style={{
-            backgroundColor: '#fff',
-            border: '1px solid #ccc',
-            padding: '0.6rem',
-            borderRadius: '5px',
-          }}
-        >
-          <p style={{ color: color, fontWeight: 'bold' }}>{dataSource}</p>
-          <p>{`이전 속도: ${preSpeed} km/h`}</p>
-          <p>{`이후 속도: ${postSpeed} km/h`}</p>
+        <div className="bg-white border border-gray-300 p-3 rounded-md">
+          <p className="font-bold" style={{ color: color }}>
+            {dataSource}
+          </p>
+          <p>{`Previous Speed: ${preSpeed} km/h`}</p>
+          <p>{`Post Speed: ${postSpeed} km/h`}</p>
         </div>
       );
     }
@@ -102,39 +95,41 @@ const DataAnalysis = ({ googleMapsApiKey, laCoordinates }) => {
   };
 
   return (
-    <div style={styles.grid}>
-      <div style={{ ...styles.card, ...styles.fullWidth }}>
-        <div style={styles.cardTitle}>사고 전후 속도 비교</div>
-        <div style={styles.chartContainer}>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="card bg-white shadow-md rounded-lg p-6 w-full">
+        <div className="text-xl font-semibold mb-4">
+          Speed Comparison Before and After the Accident
+        </div>
+        <div className="chart-container">
           <ResponsiveContainer>
             <ScatterChart>
               <CartesianGrid />
               <XAxis
                 type="number"
                 dataKey="preSpeed"
-                name="교통사고 이전 속도"
+                name="Speed Before the Accident"
                 unit="km/h"
                 domain={[0, 80]}
               />
               <YAxis
                 type="number"
                 dataKey="postSpeed"
-                name="교통사고 이후 속도"
+                name="Speed After the Accident"
                 unit="km/h"
                 domain={[0, 80]}
               />
               <Tooltip content={<CustomTooltip />} cursor={{ strokeDasharray: '3 3' }} />
               <Legend />
-              <Scatter name="실제 데이터" data={realScatterData} fill="#8884d8" />
-              <Scatter name="예측 데이터" data={predictedScatterData} fill="#82ca9d" />
+              <Scatter name="Real Data" data={realScatterData} fill="#8884d8" />
+              <Scatter name="Predicted Data" data={predictedScatterData} fill="#82ca9d" />
             </ScatterChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      <div style={{ ...styles.card, ...styles.fullWidth }}>
-        <div style={styles.cardTitle}>속도 변화 분포</div>
-        <div style={styles.chartContainer}>
+      <div className="card bg-white shadow-md rounded-lg p-6 w-full">
+        <div className="text-xl font-semibold mb-4">Distribution of Speed Change</div>
+        <div className="chart-container">
           <ResponsiveContainer>
             <BarChart data={combinedHistogramData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -142,8 +137,8 @@ const DataAnalysis = ({ googleMapsApiKey, laCoordinates }) => {
               <YAxis label={{ value: 'Count', angle: -90, position: 'insideLeft' }} />
               <Tooltip />
               <Legend />
-              <Bar dataKey="realCount" fill="#8884d8" name="실제 데이터" />
-              <Bar dataKey="predictedCount" fill="#82ca9d" name="예측 데이터" />
+              <Bar dataKey="realCount" fill="#8884d8" name="Real Data" />
+              <Bar dataKey="predictedCount" fill="#82ca9d" name="Predicted Data" />
             </BarChart>
           </ResponsiveContainer>
         </div>

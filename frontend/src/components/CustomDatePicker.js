@@ -1,7 +1,6 @@
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { ko } from 'date-fns/locale';
 import { useState } from 'react';
 
 const CustomDatePicker = ({ minDate, maxDate, handleSearch }) => {
@@ -10,10 +9,10 @@ const CustomDatePicker = ({ minDate, maxDate, handleSearch }) => {
 
   return (
     <div style={{ margin: '2rem 0px' }}>
-      <LocalizationProvider dateAdapter={AdapterDateFns} locale={ko}>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
           <DateTimePicker
-            label="시작 날짜"
+            label="Start Date"
             value={startDateTime}
             onChange={(newValue) => setStartDateTime(newValue)}
             minDateTime={minDate}
@@ -28,7 +27,7 @@ const CustomDatePicker = ({ minDate, maxDate, handleSearch }) => {
           />
           <span>-</span>
           <DateTimePicker
-            label="종료 날짜"
+            label="End Date"
             value={endDateTime}
             onChange={(newValue) => setEndDateTime(newValue)}
             minDateTime={startDateTime}
@@ -52,7 +51,7 @@ const CustomDatePicker = ({ minDate, maxDate, handleSearch }) => {
             }}
             onClick={() => handleSearch(startDateTime, endDateTime)}
           >
-            검색
+            Search
           </button>
         </div>
       </LocalizationProvider>
