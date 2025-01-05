@@ -63,28 +63,6 @@ const Dashboard = ({ googleMapsApiKey }) => {
       .catch((error) => console.error('Error fetching histogram data:', error));
   }, []);
 
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      const dataSource = payload[0].payload.source;
-      const preSpeed = payload[0].payload.preSpeed;
-      const postSpeed = payload[0].payload.postSpeed;
-
-      const color = dataSource === '실제 데이터' ? '#8884d8' : '#82ca9d';
-
-      return (
-        <div className="bg-white border border-gray-300 p-3 rounded-md">
-          <p className="font-bold" style={{ color: color }}>
-            {dataSource}
-          </p>
-          <p>{`이전 속도: ${preSpeed} km/h`}</p>
-          <p>{`이후 속도: ${postSpeed} km/h`}</p>
-        </div>
-      );
-    }
-
-    return null;
-  };
-
   return (
     <div className="w-full">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">

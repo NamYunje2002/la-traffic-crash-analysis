@@ -64,7 +64,7 @@ def get_collision_data():
                 'pre_speed_mean': 'preSpeed',
                 'post_speed_mean': 'postSpeed'
             }
-        ).assign(source="실제 데이터").to_dict(orient='records')
+        ).assign(source="Actual Data").to_dict(orient='records')
 
         # 예측값에 대한 산점도 데이터 준비
         scatter_predicted_data = collision_predicted_speed_data[['pre_speed_mean', 'post_speed_mean']].dropna().round(2).rename(
@@ -72,7 +72,7 @@ def get_collision_data():
                 'pre_speed_mean': 'preSpeed',
                 'post_speed_mean': 'postSpeed'
             }
-        ).assign(source="예측 데이터").to_dict(orient='records')
+        ).assign(source="Predicted Data").to_dict(orient='records')
 
         return jsonify({'scatter_real_data': scatter_real_data, 'scatter_predicted_data': scatter_predicted_data})
 
