@@ -51,22 +51,23 @@ function App() {
         {selectedTab === 'how-to-use' && (
           <div className="bg-white my-8 p-6 rounded-lg shadow-md max-w-3xl mx-auto">
             <h1 className="text-2xl font-bold text-gray-800 mb-4">
-              Analysis of the Impact of Traffic Accidents on Speed in LA
+              Analysis of Traffic Speed Changes Due to Accidents in LA (March - June 2012)
             </h1>
             <p className="text-gray-600 mb-4">
-              This is a VA system designed to analyze the impact of traffic accidents on speed in
-              LA.
+              This system analyzes the traffic speed changes before and after traffic accidents in
+              Los Angeles (LA) based on data from March to June of 2012.
             </p>
             <p className="text-gray-600 mb-4">
-              The dashboard is divided into two tabs: the{' '}
-              <span className="font-semibold">Data Analysis</span> tab and the{' '}
-              <span className="font-semibold">Traffic Accident Analysis</span> tab.
+              At the top of the dashboard, you can view two graphs that provide an analysis of speed
+              changes for all traffic accidents.
             </p>
-            <p className="text-gray-600">
-              The <span className="font-semibold">Data Analysis</span> tab provides an overview of
-              speed analysis for all traffic accidents. The{' '}
-              <span className="font-semibold">Traffic Accident Analysis</span> tab allows users to
-              view speed analysis for specific traffic accidents selected by the user.
+            <p className="text-gray-600 mb-4">
+              At the bottom of the dashboard, traffic accident data is displayed as markers on
+              Google Maps. By clicking on a marker, you can view the basic details of the accident.
+              The <span className="font-semibold">"Analyze"</span> button allows you to perform a
+              detailed speed analysis, comparing predicted data (extracted via the STGCN model) with
+              actual data. You can observe the speed changes from 5 minutes before to 30 minutes
+              after the accident occurs.
             </p>
           </div>
         )}
