@@ -24,7 +24,9 @@ function App() {
       {/* Sidebar */}
       <div className="w-64 bg-gray-800 text-white flex flex-col">
         <h1 className="text-xl font-bold text-center py-4 border-b border-gray-700">
-          LA Crash Impact
+          LA Traffic
+          <br />
+          Crash Analysis
         </h1>
         <button
           className={`py-3 px-4 text-left hover:bg-gray-700 ${
