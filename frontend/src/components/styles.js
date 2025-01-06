@@ -1,25 +1,4 @@
 export const styles = {
-  container: {
-    maxWidth: '90%',
-    margin: '0 auto',
-    padding: '1rem',
-  },
-  tabContainer: {
-    display: 'flex',
-    gap: '1rem',
-    borderBottom: '1px solid #e5e7eb',
-    marginBottom: '1rem',
-  },
-  tabButton: {
-    padding: '0.5rem 1rem',
-    border: 'none',
-    background: 'none',
-    cursor: 'pointer',
-  },
-  activeTab: {
-    borderBottom: '2px solid #3b82f6',
-    fontWeight: 'bold',
-  },
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 1fr)',
@@ -33,9 +12,6 @@ export const styles = {
   fullWidth: {
     gridColumn: '1 / -1',
   },
-  fixheight: {
-    height: '400px',
-  },
   cardTitle: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -46,50 +22,15 @@ export const styles = {
   },
   mapContainer: {
     width: '100%',
-    height: '40rem',
+    height: '30rem',
     borderRadius: '0.5rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  mapText: {
-    textAlign: 'center',
-    color: '#6b7280',
-    width: '100%',
-    height: '100%',
-  },
   mapContainerStyle: {
     width: '100%',
     height: '100%',
-  },
-  chartContainer: {
-    height: '30rem',
-  },
-  dateLabel: {
-    display: 'flex',
-    flexDirection: 'column',
-    fontSize: '1rem',
-    marginBottom: '0.5rem',
-  },
-  dateInput: {
-    marginTop: '0.5rem',
-    padding: '0.5rem',
-    border: '1px solid #e5e7eb',
-    borderRadius: '4px',
-    fontSize: '1rem',
-  },
-  selectedDateText: {
-    fontSize: '1rem',
-    color: '#6b7280',
-  },
-  analyzeButton: {
-    marginTop: '0.6rem',
-    padding: '0.5rem 0.8rem',
-    backgroundColor: '#007bff',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
   },
   modalContent: {
     top: '50%',
@@ -99,7 +40,7 @@ export const styles = {
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
     width: '90%',
-    height: '90%',
+    height: '100%',
   },
   modalCloseButton: {
     position: 'absolute',
