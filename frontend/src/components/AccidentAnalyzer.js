@@ -21,7 +21,7 @@ const AccidentAnalyzer = ({ googleMapsApiKey }) => {
   const handleMarkerClick = (location) => {
     setSelectedCollisionLocation(location);
     setMapCenter({
-      lat: parseFloat(location.latitude) + 0.01,
+      lat: parseFloat(location.latitude),
       lng: parseFloat(location.longitude),
     });
   };
@@ -71,7 +71,7 @@ const AccidentAnalyzer = ({ googleMapsApiKey }) => {
           {googleMapsApiKey ? (
             <LoadScript googleMapsApiKey={googleMapsApiKey}>
               <GoogleMap
-                mapContainerClassName="w-full h-96 rounded-lg"
+                mapContainerClassName="w-full h-[40rem] rounded-lg"
                 zoom={14}
                 center={mapCenter}
                 onClick={() => setSelectedCollisionLocation(null)}
