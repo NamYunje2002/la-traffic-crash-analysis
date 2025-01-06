@@ -29,7 +29,7 @@ const CustomLegend = () => {
             backgroundColor: '#8884d8',
           }}
         ></div>
-        <span style={{ fontSize: '1rem', color: '#8884d8' }}>Real Data</span>
+        <span style={{ fontSize: '1rem', color: '#8884d8' }}>Actual Data</span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
         <div
@@ -70,7 +70,7 @@ const AverageSpeedChart = ({ realSpeedData, predictedSpeedData }) => {
           <Line
             type="monotone"
             dataKey="realAverageSpeed"
-            name="Real Data"
+            name="Actual Data"
             stroke="#8884d8"
             strokeWidth={4}
             activeDot={{ r: 8 }}

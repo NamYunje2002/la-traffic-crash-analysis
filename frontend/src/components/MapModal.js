@@ -289,7 +289,7 @@ const MapMdal = ({ isOpen, onClose, collisionLocation }) => {
           <>
             <div style={styles.fullWidth}>{renderSpeedCircles([10, 25, 35, 45, 55, 65])}</div>
             <div style={styles.card}>
-              <div style={styles.cardTitle}>Real Data</div>
+              <div style={styles.cardTitle}>Actual Data</div>
               <div style={{ ...styles.mapContainer }}>
                 <GoogleMap
                   mapContainerStyle={styles.mapContainerStyle}
