@@ -1,6 +1,6 @@
 # LA 교통 사고가 속도에 미치는 영향 분석 시스템
 
-![시연 GIF](./demo.gif)
+[![demo](http://img.youtube.com/vi/HJQ7MsvXuX8/0.jpg)](https://www.youtube.com/watch?v=HJQ7MsvXuX8?t=0s) 
 
 <br>
 
